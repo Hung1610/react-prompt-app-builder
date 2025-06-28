@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { PromptPanel } from './components/PromptPanel';
 import { FileExplorer } from './components/FileExplorer';
 import { CodeEditor } from './components/CodeEditor';
+import { PreviewPanel } from './components/PreviewPanel';
+import { EditorTabs } from './components/EditorTabs';
 import { useResizer } from './hooks/useResizer';
 import { sampleProject } from './data/sampleProject';
 import { FileNode } from './types';
@@ -9,6 +11,7 @@ import { FileNode } from './types';
 function App() {
   const [files, setFiles] = useState<FileNode[]>(sampleProject);
   const [activeFile, setActiveFile] = useState<string>('src/App.tsx');
+  const [activeTab, setActiveTab] = useState<'code' | 'preview'>('code');
   const { leftWidth, startResizing, containerRef, isResizing } = useResizer(40);
 
   const handlePromptSubmit = (prompt: string) => {
@@ -19,6 +22,8 @@ function App() {
 
   const handleFileSelect = (filePath: string) => {
     setActiveFile(filePath);
+    // Switch to code tab when selecting a file
+    setActiveTab('code');
   };
 
   const updateFileContent = (files: FileNode[], path: string, content: string): FileNode[] => {
@@ -35,6 +40,10 @@ function App() {
 
   const handleFileChange = (filePath: string, content: string) => {
     setFiles(prev => updateFileContent(prev, filePath, content));
+  };
+
+  const handleTabChange = (tab: 'code' | 'preview') => {
+    setActiveTab(tab);
   };
 
   return (
@@ -64,7 +73,7 @@ function App() {
           onMouseDown={startResizing}
         />
 
-        {/* Right Panel - Code Editor */}
+        {/* Right Panel - Code Editor/Preview */}
         <div className="flex-1 flex overflow-hidden">
           {/* File Explorer */}
           <div className="w-64 border-r border-gray-700 flex-shrink-0">
@@ -75,13 +84,23 @@ function App() {
             />
           </div>
 
-          {/* Code Editor */}
-          <div className="flex-1">
-            <CodeEditor
-              activeFile={activeFile}
-              files={files}
-              onFileChange={handleFileChange}
-            />
+          {/* Editor/Preview Area */}
+          <div className="flex-1 flex flex-col">
+            {/* Tabs */}
+            <EditorTabs activeTab={activeTab} onTabChange={handleTabChange} />
+            
+            {/* Content */}
+            <div className="flex-1 overflow-hidden">
+              {activeTab === 'code' ? (
+                <CodeEditor
+                  activeFile={activeFile}
+                  files={files}
+                  onFileChange={handleFileChange}
+                />
+              ) : (
+                <PreviewPanel files={files} />
+              )}
+            </div>
           </div>
         </div>
       </div>
