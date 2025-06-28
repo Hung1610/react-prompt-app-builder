@@ -74,35 +74,35 @@ function App() {
         />
 
         {/* Right Panel - Code Editor/Preview */}
-        <div className="flex-1 flex overflow-hidden">
-          {/* File Explorer - Only visible in code tab */}
-          {activeTab === 'code' && (
-            <div className="w-64 border-r border-gray-700 flex-shrink-0">
-              <FileExplorer
-                files={files}
-                activeFile={activeFile}
-                onFileSelect={handleFileSelect}
-              />
-            </div>
-          )}
-
-          {/* Editor/Preview Area */}
-          <div className="flex-1 flex flex-col">
-            {/* Tabs */}
-            <EditorTabs activeTab={activeTab} onTabChange={handleTabChange} />
-            
-            {/* Content */}
-            <div className="flex-1 overflow-hidden">
-              {activeTab === 'code' ? (
-                <CodeEditor
-                  activeFile={activeFile}
-                  files={files}
-                  onFileChange={handleFileChange}
-                />
-              ) : (
-                <PreviewPanel files={files} />
-              )}
-            </div>
+        <div className="flex-1 flex flex-col overflow-hidden">
+          {/* Tabs - Above everything */}
+          <EditorTabs activeTab={activeTab} onTabChange={handleTabChange} />
+          
+          {/* Content Area */}
+          <div className="flex-1 flex overflow-hidden">
+            {activeTab === 'code' ? (
+              <>
+                {/* File Explorer */}
+                <div className="w-64 border-r border-gray-700 flex-shrink-0">
+                  <FileExplorer
+                    files={files}
+                    activeFile={activeFile}
+                    onFileSelect={handleFileSelect}
+                  />
+                </div>
+                {/* Code Editor */}
+                <div className="flex-1">
+                  <CodeEditor
+                    activeFile={activeFile}
+                    files={files}
+                    onFileChange={handleFileChange}
+                  />
+                </div>
+              </>
+            ) : (
+              /* Live Preview - Full Width */
+              <PreviewPanel files={files} />
+            )}
           </div>
         </div>
       </div>
