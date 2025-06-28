@@ -75,14 +75,16 @@ function App() {
 
         {/* Right Panel - Code Editor/Preview */}
         <div className="flex-1 flex overflow-hidden">
-          {/* File Explorer */}
-          <div className="w-64 border-r border-gray-700 flex-shrink-0">
-            <FileExplorer
-              files={files}
-              activeFile={activeFile}
-              onFileSelect={handleFileSelect}
-            />
-          </div>
+          {/* File Explorer - Only visible in code tab */}
+          {activeTab === 'code' && (
+            <div className="w-64 border-r border-gray-700 flex-shrink-0">
+              <FileExplorer
+                files={files}
+                activeFile={activeFile}
+                onFileSelect={handleFileSelect}
+              />
+            </div>
+          )}
 
           {/* Editor/Preview Area */}
           <div className="flex-1 flex flex-col">
